@@ -11,8 +11,9 @@ tasks_data_file = "tasks_data.json"
 def add(name: str):
     task = {
         "name": name,
-        "created_at": datetime.datetime.now().isoformat(),
-        "status": "todo"
+        "created_at": datetime.datetime.now().replace(microsecond=0).isoformat(),
+        "status": "todo",
+        "id": int(time.time())
     }
     try:
         with open(tasks_data_file, "r") as f:
@@ -40,7 +41,7 @@ def list():
         print("No tasks found.")
         return
     for idx, task in enumerate(tasks, start=1):
-        print(f"{idx}. {task['name']} - {task['status']} (Created at: {task['created_at']})")
+        print(f"{idx}. {task['name']} - {task['status']} (Created at: {task['created_at']}, ID: {task['id']})")
 
 @app.command()
 def strt(name: str):
@@ -60,7 +61,7 @@ def strt(name: str):
                 json.dump(tasks, f, indent=2)
             print(f"Task '{name}' started.")
             return
-    
+        
 @app.command()
 def cmplt(name: str):
     try:
@@ -114,11 +115,9 @@ def clr():
     with open(tasks_data_file, "w") as f:
         json.dump(tasks, f, indent=2)
         print("All tasks cleared.")
+        
     
-
-
-
 if __name__ == "__main__":
     app()
 
-   
+    
